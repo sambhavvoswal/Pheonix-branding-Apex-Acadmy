@@ -11,7 +11,7 @@ return (
 
 
         {/*Hero section head & taglines*/}
-        <div className='text-2xl md:text-4xl text-center max-w-4xl'>Crack Your Dream Exam with India's Top- <span className='text-orange-500 font-bold'>Mentors</span></div>
+        <div className='text-2xl md:text-4xl text-center max-w-4xl'>Crack Your Dream Exam with India's Top - <span className='text-orange-500 font-bold'>Mentors</span></div>
         <div className='text-base md:text-lg text-center p-4 max-w-2xl'>
             Join 50,000+ students who achieved top ranks in JEE, NEET & UPSC.
         </div>
