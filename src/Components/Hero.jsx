@@ -7,7 +7,7 @@ import FloatingLogos from './FloatingLogos'
 import { FaArrowRight } from "react-icons/fa";
 const Hero = () => {
 return (
-    <div className='relative min-h-screen w-full max-w-full overflow-hidden flex flex-col items-center justify-center gap-8 bg-gray-100 text-gray-800 px-4 py-8 md:px-8'> 
+    <div className='relative min-h-screen w-full max-w-full overflow-hidden flex flex-col items-center justify-center gap-8 bg-gray-100 text-gray-800 px-4 py-8 md:px-8 pt-24 md:pt-32'> 
 
 
         {/*Hero section head & taglines*/}
