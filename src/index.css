@@ -8,6 +8,11 @@
     --light: #f8f9fa;
 }
 
+html,
+body {
+  overflow-x: hidden;
+}
+
 /* Floating animation */
 @keyframes float {
   0%, 100% {
