@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { useRef } from 'react'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import jeeImg   from "../assets/courses/jeeImg.png";
 import neetImg  from "../assets/courses/neetImg.png";
 import upscImg  from "../assets/courses/upscImg.png";
 import foundImg from "../assets/courses/foundImg.png";
 import CourseCard from './course/CourseCard';
 
+gsap.registerPlugin(ScrollTrigger);
 
 const courseData = [
     {
@@ -63,23 +67,70 @@ const courseData = [
 
 
 const Couse = () => {
-return (
-    <>
+  const sectionRef = useRef(null);
 
-    <div className='w-full h-auto flex justify-center mt-10'>
-        <div className='inline-flex rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.35em] text-orange-600 mb-6'>
-            Courses
+  useGSAP(
+    () => {
+      // Badge pill
+      gsap.fromTo(
+        sectionRef.current.querySelector('[data-gsap="badge"]'),
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 85%",
+            once: true,
+          },
+        }
+      );
+
+      // Course cards
+      const cards = sectionRef.current.querySelectorAll('[data-gsap="card"]');
+      gsap.fromTo(
+        cards,
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.15,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 75%",
+            once: true,
+          },
+        }
+      );
+    },
+    { scope: sectionRef }
+  );
+
+  return (
+    <div ref={sectionRef}>
+      <div className='w-full h-auto flex justify-center mt-10'>
+        <div
+          data-gsap="badge"
+          className='inline-flex rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.35em] text-orange-600 mb-6'
+          style={{ opacity: 0 }}
+        >
+          Courses
         </div>
+      </div>
+
+      <div className='w-full max-w-7xl mx-auto px-4 py-20 flex gap-8 flex-wrap justify-center'>
+        {courseData.map((course) => (
+          <div key={course.id} data-gsap="card" style={{ opacity: 0 }}>
+            <CourseCard course={course} />
+          </div>
+        ))}
+      </div>
     </div>
-
-    <div className='w-full max-w-7xl mx-auto px-4 py-20 flex gap-8 flex-wrap justify-center'>
-            {courseData.map((course) => (
-                <CourseCard key={course.id} course={course} />
-            ))}
-
-        </div>
-        </>
-    )
+  )
 }
 
 export default Couse

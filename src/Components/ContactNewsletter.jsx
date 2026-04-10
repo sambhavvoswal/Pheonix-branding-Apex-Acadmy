@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MdPhone, MdEmail, MdSend } from "react-icons/md";
 import { HiArrowRight } from "react-icons/hi";
 import { FaBell } from "react-icons/fa";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const courses = [
   "JEE Main & Advanced",
@@ -21,6 +26,7 @@ export default function ContactNewsletter() {
   const [focused, setFocused] = useState("");
   const [btnHovered, setBtnHovered] = useState(false);
   const [subHovered, setSubHovered] = useState(false);
+  const sectionRef = useRef(null);
 
   const handleChange = (e) =>
     setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
@@ -51,6 +57,65 @@ export default function ContactNewsletter() {
     boxShadow: focused === name ? "0 0 0 3px #FF6B3518" : "none",
   });
 
+  useGSAP(
+    () => {
+      // Left info block — slide from left
+      const left = sectionRef.current.querySelector('[data-gsap="left"]');
+      gsap.fromTo(
+        left,
+        { x: -80, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 0.9,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+            once: true,
+          },
+        }
+      );
+
+      // Right form — slide from right
+      const right = sectionRef.current.querySelector('[data-gsap="right"]');
+      gsap.fromTo(
+        right,
+        { x: 80, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 0.9,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+            once: true,
+          },
+        }
+      );
+
+      // Newsletter bar — fade up
+      const newsletter = sectionRef.current.querySelector('[data-gsap="newsletter"]');
+      gsap.fromTo(
+        newsletter,
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: newsletter,
+            start: "top 90%",
+            once: true,
+          },
+        }
+      );
+    },
+    { scope: sectionRef }
+  );
+
   return (
     <>
       <link
@@ -59,6 +124,7 @@ export default function ContactNewsletter() {
       />
 
       <section
+        ref={sectionRef}
         className="relative w-full overflow-hidden py-16 sm:py-24 px-4 sm:px-8"
         style={{ background: "#1B2A4A" }}
       >
@@ -84,7 +150,7 @@ export default function ContactNewsletter() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
 
             {/* Left — info */}
-            <div className="flex flex-col gap-8">
+            <div data-gsap="left" className="flex flex-col gap-8" style={{ opacity: 0 }}>
               <div className="flex flex-col gap-4">
                 <span
                   className="text-xs font-bold tracking-widest uppercase px-4 py-1.5
@@ -192,10 +258,12 @@ export default function ContactNewsletter() {
 
             {/* Right — form */}
             <div
+              data-gsap="right"
               className="rounded-2xl p-6 sm:p-8 flex flex-col gap-5"
               style={{
                 background: "#fff",
                 boxShadow: "0 24px 60px rgba(0,0,0,0.25)",
+                opacity: 0,
               }}
             >
               {formSubmitted ? (
@@ -343,11 +411,13 @@ export default function ContactNewsletter() {
 
           {/* ── BOTTOM: Newsletter ── */}
           <div
+            data-gsap="newsletter"
             className="flex flex-col sm:flex-row items-center justify-between
                        gap-8 rounded-2xl px-6 sm:px-10 py-8"
             style={{
               background: "rgba(255,107,53,0.10)",
               border: "1px solid rgba(255,107,53,0.22)",
+              opacity: 0,
             }}
           >
             {/* Left text */}

@@ -1,6 +1,11 @@
-﻿import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FaUserGraduate, FaTrophy, FaStar } from "react-icons/fa";
 import { MdVerified } from "react-icons/md";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const stats = [
   {
@@ -80,6 +85,7 @@ function StatCard({ stat, index, visible }) {
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      data-gsap="reveal"
       style={{
         background: hovered ? stat.color : stat.bg,
         border: `1.5px solid ${hovered ? stat.color : stat.border}`,
@@ -94,8 +100,6 @@ function StatCard({ stat, index, visible }) {
         cursor: "default",
         transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
         transform: hovered ? "translateY(-6px) scale(1.02)" : "translateY(0) scale(1)",
-        opacity: visible ? 1 : 0,
-        transitionDelay: `${index * 0.1}s`,
         boxShadow: hovered
           ? `0 20px 40px ${stat.color}33`
           : "0 2px 12px rgba(0,0,0,0.06)",
@@ -163,19 +167,51 @@ const Achievement = () => {
   const [visible, setVisible] = useState(false);
   const sectionRef = useRef(null);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
+  /* Use ScrollTrigger instead of IntersectionObserver */
+  useGSAP(
+    () => {
+      // Header reveal
+      const headerEls = sectionRef.current.querySelectorAll('[data-gsap="reveal-header"]');
+      gsap.fromTo(
+        headerEls,
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+            once: true,
+          },
         }
-      },
-      { threshold: 0.2 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
+      );
+
+      // Cards reveal + trigger count-up
+      const cards = sectionRef.current.querySelectorAll('[data-gsap="reveal"]');
+      gsap.fromTo(
+        cards,
+        { y: 60, opacity: 0, scale: 0.95 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.7,
+          ease: "power3.out",
+          stagger: 0.12,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 75%",
+            once: true,
+            onEnter: () => setVisible(true),
+          },
+        }
+      );
+    },
+    { scope: sectionRef }
+  );
 
   return (
     <>
@@ -228,12 +264,10 @@ const Achievement = () => {
           style={{
             textAlign: "center",
             marginBottom: "clamp(2rem, 5vw, 4rem)",
-            opacity: visible ? 1 : 0,
-            transform: visible ? "translateY(0)" : "translateY(20px)",
-            transition: "all 0.6s ease",
           }}
         >
           <span
+            data-gsap="reveal-header"
             style={{
               fontFamily: "'Nunito', sans-serif",
               fontSize: "0.8rem",
@@ -247,11 +281,13 @@ const Achievement = () => {
               padding: "6px 18px",
               display: "inline-block",
               marginBottom: "1rem",
+              opacity: 0,
             }}
           >
             Our Achievements
           </span>
           <h2
+            data-gsap="reveal-header"
             style={{
               fontFamily: "'Nunito', sans-serif",
               fontSize: "clamp(1.8rem, 4.5vw, 3rem)",
@@ -259,6 +295,7 @@ const Achievement = () => {
               color: "#1B2A4A",
               margin: "0 0 0.75rem",
               lineHeight: 1.2,
+              opacity: 0,
             }}
           >
             Numbers That Speak
@@ -266,6 +303,7 @@ const Achievement = () => {
             <span style={{ color: "#FF6B35" }}>For Themselves</span>
           </h2>
           <p
+            data-gsap="reveal-header"
             style={{
               fontFamily: "'Nunito', sans-serif",
               fontSize: "clamp(0.95rem, 2vw, 1.1rem)",
@@ -273,6 +311,7 @@ const Achievement = () => {
               maxWidth: "500px",
               margin: "0 auto",
               lineHeight: 1.7,
+              opacity: 0,
             }}
           >
             Over a decade of shaping toppers across India's most competitive exams.

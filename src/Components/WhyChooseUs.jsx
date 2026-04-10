@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FaChalkboardTeacher, FaFlask, FaBook } from "react-icons/fa";
 import { MdPersonSearch, MdQuestionAnswer } from "react-icons/md";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const reasons = [
   {
@@ -63,6 +68,8 @@ function ReasonRow({ reason, index }) {
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      data-gsap="reason"
+      data-direction={isEven ? "left" : "right"}
       className="group relative flex items-start sm:items-center gap-5 sm:gap-8
                  rounded-2xl px-5 sm:px-8 py-5 sm:py-6 cursor-default
                  transition-all duration-500"
@@ -75,6 +82,7 @@ function ReasonRow({ reason, index }) {
         transform: hovered
           ? `translateX(${isEven ? "6px" : "-6px"})`
           : "translateX(0)",
+        opacity: 0,
       }}
     >
       {/* Big faded number — decorative */}
@@ -148,6 +156,53 @@ function ReasonRow({ reason, index }) {
 }
 
 export default function WhyChooseUs() {
+  const sectionRef = useRef(null);
+
+  useGSAP(
+    () => {
+      // Header
+      const headers = sectionRef.current.querySelectorAll('[data-gsap="header"]');
+      gsap.fromTo(
+        headers,
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 85%",
+            once: true,
+          },
+        }
+      );
+
+      // Reason rows — alternating slide-in from left/right
+      const rows = sectionRef.current.querySelectorAll('[data-gsap="reason"]');
+      rows.forEach((row, i) => {
+        const fromLeft = row.dataset.direction === "left";
+        gsap.fromTo(
+          row,
+          { x: fromLeft ? -80 : 80, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: row,
+              start: "top 88%",
+              once: true,
+            },
+          }
+        );
+      });
+    },
+    { scope: sectionRef }
+  );
+
   return (
     <>
       <link
@@ -156,6 +211,7 @@ export default function WhyChooseUs() {
       />
 
       <section
+        ref={sectionRef}
         className="relative w-full overflow-hidden py-16 sm:py-24 px-4 sm:px-8"
         style={{ background: "#FAFAF8" }}
       >
@@ -180,6 +236,7 @@ export default function WhyChooseUs() {
           {/* Header */}
           <div className="flex flex-col items-center text-center gap-4 max-w-xl">
             <span
+              data-gsap="header"
               className="text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded-full"
               style={{
                 fontFamily: "'Nunito', sans-serif",
@@ -187,17 +244,20 @@ export default function WhyChooseUs() {
                 background: "#FFF4EF",
                 border: "1px solid #FFD5C2",
                 letterSpacing: "2.5px",
+                opacity: 0,
               }}
             >
               Why Apex Academy
             </span>
 
             <h2
+              data-gsap="header"
               className="font-black leading-tight"
               style={{
                 fontFamily: "'Nunito', sans-serif",
                 fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
                 color: "#1B2A4A",
+                opacity: 0,
               }}
             >
               Not Just a Coaching.{" "}
@@ -205,10 +265,12 @@ export default function WhyChooseUs() {
             </h2>
 
             <p
+              data-gsap="header"
               className="text-base sm:text-lg leading-relaxed"
               style={{
                 fontFamily: "'Nunito', sans-serif",
                 color: "#6B7280",
+                opacity: 0,
               }}
             >
               Here's what sets us apart from every other institute out there.

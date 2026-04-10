@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FaYoutube, FaInstagram, FaFacebook } from "react-icons/fa";
 import { HiLocationMarker } from "react-icons/hi";
 import { MdPhone, MdEmail } from "react-icons/md";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const quickLinks = ["Courses", "Results", "Faculty", "Contact"];
 const policies   = ["Privacy Policy", "Terms & Conditions"];
@@ -65,6 +70,49 @@ function SocialBtn({ social }) {
 }
 
 export default function Footer() {
+  const footerRef = useRef(null);
+
+  useGSAP(
+    () => {
+      // Footer columns — staggered fade-up
+      const cols = footerRef.current.querySelectorAll('[data-gsap="col"]');
+      gsap.fromTo(
+        cols,
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          ease: "power3.out",
+          stagger: 0.12,
+          scrollTrigger: {
+            trigger: footerRef.current,
+            start: "top 88%",
+            once: true,
+          },
+        }
+      );
+
+      // Bottom bar — fade in
+      const bottom = footerRef.current.querySelector('[data-gsap="bottom"]');
+      gsap.fromTo(
+        bottom,
+        { opacity: 0 },
+        {
+          opacity: 1,
+          duration: 0.6,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: bottom,
+            start: "top 95%",
+            once: true,
+          },
+        }
+      );
+    },
+    { scope: footerRef }
+  );
+
   return (
     <>
       <link
@@ -73,6 +121,7 @@ export default function Footer() {
       />
 
       <footer
+        ref={footerRef}
         className="relative w-full overflow-hidden"
         style={{ background: "#0D1827" }}
       >
@@ -91,7 +140,7 @@ export default function Footer() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
 
             {/* Col 1 — Brand */}
-            <div className="flex flex-col gap-5 lg:col-span-1">
+            <div data-gsap="col" className="flex flex-col gap-5 lg:col-span-1" style={{ opacity: 0 }}>
               {/* Logo */}
               <div className="flex items-center gap-2">
                 <div
@@ -140,7 +189,7 @@ export default function Footer() {
             </div>
 
             {/* Col 2 — Quick Links */}
-            <div className="flex flex-col gap-5">
+            <div data-gsap="col" className="flex flex-col gap-5" style={{ opacity: 0 }}>
               <h4
                 className="text-sm font-black uppercase tracking-widest"
                 style={{
@@ -157,7 +206,7 @@ export default function Footer() {
             </div>
 
             {/* Col 3 — Policies */}
-            <div className="flex flex-col gap-5">
+            <div data-gsap="col" className="flex flex-col gap-5" style={{ opacity: 0 }}>
               <h4
                 className="text-sm font-black uppercase tracking-widest"
                 style={{
@@ -191,7 +240,7 @@ export default function Footer() {
             </div>
 
             {/* Col 4 — Social */}
-            <div className="flex flex-col gap-5">
+            <div data-gsap="col" className="flex flex-col gap-5" style={{ opacity: 0 }}>
               <h4
                 className="text-sm font-black uppercase tracking-widest"
                 style={{
@@ -240,7 +289,7 @@ export default function Footer() {
             style={{ background: "rgba(255,255,255,0.07)" }}
           />
 
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div data-gsap="bottom" className="flex flex-col sm:flex-row items-center justify-between gap-4" style={{ opacity: 0 }}>
             <p
               className="text-xs text-center sm:text-left"
               style={{ fontFamily: "'Nunito', sans-serif", color: "#475569" }}

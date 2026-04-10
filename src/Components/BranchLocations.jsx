@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { HiLocationMarker, HiArrowRight } from "react-icons/hi";
 import { MdAccessTime, MdPhone } from "react-icons/md";
 
@@ -6,6 +9,8 @@ import bangaloreImg from "../assets/branches/bangalore.png";
 import hyderabadImg from "../assets/branches/hyderabad.png";
 import delhiImg     from "../assets/branches/delhi.png";
 import puneImg      from "../assets/branches/pune.png";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const branches = [
   {
@@ -61,6 +66,7 @@ function BranchCard({ branch }) {
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      data-gsap="card"
       className="relative rounded-2xl overflow-hidden cursor-default
                  transition-all duration-500 group"
       style={{
@@ -70,6 +76,7 @@ function BranchCard({ branch }) {
         transform: hovered ? "translateY(-8px) scale(1.01)" : "translateY(0) scale(1)",
         flex: "1 1 220px",
         minWidth: "220px",
+        opacity: 0,
       }}
     >
       {/* Background city image */}
@@ -81,7 +88,7 @@ function BranchCard({ branch }) {
           style={{ transform: hovered ? "scale(1.08)" : "scale(1)" }}
         />
 
-        {/* Dark overlay — lightens slightly on hover to reveal image */}
+        {/* Dark overlay */}
         <div
           className="absolute inset-0 transition-all duration-500"
           style={{
@@ -91,7 +98,7 @@ function BranchCard({ branch }) {
           }}
         />
 
-        {/* Tag pill — top left */}
+        {/* Tag pill */}
         <div className="absolute top-4 left-4 z-10">
           <span
             className="text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-sm
@@ -107,7 +114,7 @@ function BranchCard({ branch }) {
           </span>
         </div>
 
-        {/* Pin icon — top right */}
+        {/* Pin icon */}
         <div
           className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full
                      flex items-center justify-center backdrop-blur-sm
@@ -121,7 +128,7 @@ function BranchCard({ branch }) {
           <HiLocationMarker size={16} color="#fff" />
         </div>
 
-        {/* City name over image — bottom */}
+        {/* City name */}
         <div className="absolute bottom-0 left-0 right-0 z-10 px-5 pb-5">
           <p
             className="text-white/70 text-xs font-semibold uppercase tracking-widest mb-0.5
@@ -142,7 +149,7 @@ function BranchCard({ branch }) {
         </div>
       </div>
 
-      {/* Info drawer — slides up on hover */}
+      {/* Info drawer */}
       <div
         className="flex flex-col gap-3 px-5 overflow-hidden transition-all duration-500"
         style={{
@@ -192,6 +199,69 @@ function BranchCard({ branch }) {
 
 export default function BranchLocations() {
   const [btnHovered, setBtnHovered] = useState(false);
+  const sectionRef = useRef(null);
+
+  useGSAP(
+    () => {
+      // Header
+      const headers = sectionRef.current.querySelectorAll('[data-gsap="header"]');
+      gsap.fromTo(
+        headers,
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 85%",
+            once: true,
+          },
+        }
+      );
+
+      // Cards — scale + fade
+      const cards = sectionRef.current.querySelectorAll('[data-gsap="card"]');
+      gsap.fromTo(
+        cards,
+        { y: 50, opacity: 0, scale: 0.95 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.12,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 75%",
+            once: true,
+          },
+        }
+      );
+
+      // CTA
+      const cta = sectionRef.current.querySelector('[data-gsap="cta"]');
+      gsap.fromTo(
+        cta,
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: cta,
+            start: "top 90%",
+            once: true,
+          },
+        }
+      );
+    },
+    { scope: sectionRef }
+  );
 
   return (
     <>
@@ -201,6 +271,7 @@ export default function BranchLocations() {
       />
 
       <section
+        ref={sectionRef}
         className="relative w-full overflow-hidden py-16 sm:py-24 px-4 sm:px-8"
         style={{ background: "#FAFAF8" }}
       >
@@ -218,6 +289,7 @@ export default function BranchLocations() {
           {/* Header */}
           <div className="flex flex-col items-center text-center gap-4 max-w-xl">
             <span
+              data-gsap="header"
               className="text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded-full"
               style={{
                 fontFamily: "'Nunito', sans-serif",
@@ -225,17 +297,20 @@ export default function BranchLocations() {
                 background: "#FFF4EF",
                 border: "1px solid #FFD5C2",
                 letterSpacing: "2.5px",
+                opacity: 0,
               }}
             >
               Our Centres
             </span>
 
             <h2
+              data-gsap="header"
               className="font-black leading-tight"
               style={{
                 fontFamily: "'Nunito', sans-serif",
                 fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
                 color: "#1B2A4A",
+                opacity: 0,
               }}
             >
               We're Present{" "}
@@ -243,10 +318,12 @@ export default function BranchLocations() {
             </h2>
 
             <p
+              data-gsap="header"
               className="text-base sm:text-lg leading-relaxed"
               style={{
                 fontFamily: "'Nunito', sans-serif",
                 color: "#6B7280",
+                opacity: 0,
               }}
             >
               Find your nearest Apex Academy centre and walk in for a free counselling session.
@@ -262,6 +339,7 @@ export default function BranchLocations() {
 
           {/* CTA */}
           <button
+            data-gsap="cta"
             onMouseEnter={() => setBtnHovered(true)}
             onMouseLeave={() => setBtnHovered(false)}
             className="flex items-center gap-2.5 px-8 py-4 rounded-full
@@ -274,6 +352,7 @@ export default function BranchLocations() {
                 ? "0 12px 32px #FF6B3550"
                 : "0 4px 16px #FF6B3530",
               transform: btnHovered ? "scale(1.04)" : "scale(1)",
+              opacity: 0,
             }}
           >
             Find Nearest Center

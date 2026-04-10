@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { HiPlay } from "react-icons/hi";
 import { MdLiveTv, MdVideoLibrary, MdTopic } from "react-icons/md";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const features = [
   {
@@ -29,13 +34,14 @@ const features = [
   },
 ];
 
-function FeatureCard({ feature, index, visible }) {
+function FeatureCard({ feature }) {
   const [hovered, setHovered] = useState(false);
 
   return (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      data-gsap="card"
       className="flex flex-col gap-4 rounded-2xl p-6 sm:p-8 flex-1 min-w-55
                  transition-all duration-500 cursor-default"
       style={{
@@ -45,8 +51,7 @@ function FeatureCard({ feature, index, visible }) {
         boxShadow: hovered
           ? `0 20px 40px ${feature.accent}30`
           : "0 2px 12px rgba(0,0,0,0.05)",
-        opacity: visible ? 1 : 0,
-        transitionDelay: `${index * 0.12}s`,
+        opacity: 0,
       }}
     >
       {/* Icon */}
@@ -87,8 +92,70 @@ function FeatureCard({ feature, index, visible }) {
 }
 
 export default function DemoClassesSection() {
-  const [visible] = useState(true);
   const [btnHovered, setBtnHovered] = useState(false);
+  const sectionRef = useRef(null);
+
+  useGSAP(
+    () => {
+      // Header elements
+      const headers = sectionRef.current.querySelectorAll('[data-gsap="header"]');
+      gsap.fromTo(
+        headers,
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 85%",
+            once: true,
+          },
+        }
+      );
+
+      // Feature cards
+      const cards = sectionRef.current.querySelectorAll('[data-gsap="card"]');
+      gsap.fromTo(
+        cards,
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.12,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 75%",
+            once: true,
+          },
+        }
+      );
+
+      // CTA button
+      const btn = sectionRef.current.querySelector('[data-gsap="cta"]');
+      gsap.fromTo(
+        btn,
+        { y: 30, opacity: 0, scale: 0.9 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.6,
+          ease: "back.out(1.4)",
+          scrollTrigger: {
+            trigger: btn,
+            start: "top 90%",
+            once: true,
+          },
+        }
+      );
+    },
+    { scope: sectionRef }
+  );
 
   return (
     <>
@@ -98,6 +165,7 @@ export default function DemoClassesSection() {
       />
 
       <section
+        ref={sectionRef}
         className="relative w-full overflow-hidden py-20 sm:py-28 px-4 sm:px-8"
         style={{ background: "#FAFAF8" }}
       >
@@ -126,6 +194,7 @@ export default function DemoClassesSection() {
           {/* ── Header ── */}
           <div className="flex flex-col items-center text-center gap-4 max-w-2xl">
             <span
+              data-gsap="header"
               className="text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded-full"
               style={{
                 fontFamily: "'Nunito', sans-serif",
@@ -133,17 +202,20 @@ export default function DemoClassesSection() {
                 background: "#FFF4EF",
                 border: "1px solid #FFD5C2",
                 letterSpacing: "2.5px",
+                opacity: 0,
               }}
             >
               Demo Classes
             </span>
 
             <h2
+              data-gsap="header"
               className="font-black leading-tight"
               style={{
                 fontFamily: "'Nunito', sans-serif",
                 fontSize: "clamp(1.8rem, 4.5vw, 3rem)",
                 color: "#1B2A4A",
+                opacity: 0,
               }}
             >
               Experience Learning{" "}
@@ -151,10 +223,12 @@ export default function DemoClassesSection() {
             </h2>
 
             <p
+              data-gsap="header"
               className="text-base sm:text-lg leading-relaxed"
               style={{
                 fontFamily: "'Nunito', sans-serif",
                 color: "#6B7280",
+                opacity: 0,
               }}
             >
               Get a taste of Apex Academy's teaching quality — completely free,
@@ -165,12 +239,13 @@ export default function DemoClassesSection() {
           {/* ── Feature cards ── */}
           <div className="flex flex-col sm:flex-row gap-5 w-full">
             {features.map((f, i) => (
-              <FeatureCard key={i} feature={f} index={i} visible={visible} />
+              <FeatureCard key={i} feature={f} />
             ))}
           </div>
 
           {/* ── CTA Button ── */}
           <button
+            data-gsap="cta"
             onMouseEnter={() => setBtnHovered(true)}
             onMouseLeave={() => setBtnHovered(false)}
             className="flex items-center gap-3 px-8 py-4 rounded-full font-bold
@@ -183,6 +258,7 @@ export default function DemoClassesSection() {
                 ? "0 12px 32px #FF6B3550"
                 : "0 4px 16px #FF6B3530",
               transform: btnHovered ? "scale(1.04)" : "scale(1)",
+              opacity: 0,
             }}
           >
             {/* Animated play icon ring */}

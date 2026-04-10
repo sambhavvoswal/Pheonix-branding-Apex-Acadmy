@@ -1,5 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FaQuoteLeft, FaStar } from "react-icons/fa";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const testimonials = [
   {
@@ -73,6 +78,7 @@ function CommentCard({ t, active }) {
 
   return (
     <div
+      data-gsap="card"
       className="flex flex-col gap-4 rounded-2xl p-5 sm:p-6 w-full
                  transition-all duration-500"
       style={{
@@ -82,6 +88,7 @@ function CommentCard({ t, active }) {
           ? `0 16px 40px ${t.accent}22`
           : "0 2px 12px rgba(0,0,0,0.05)",
         transform: active ? "scale(1.01)" : "scale(1)",
+        opacity: 0,
       }}
     >
       {/* Top row — avatar + name + tag */}
@@ -167,7 +174,50 @@ function CommentCard({ t, active }) {
 
 export default function TestimonialsSection() {
   const [current, setCurrent] = useState(0);
+  const sectionRef = useRef(null);
 
+  useGSAP(
+    () => {
+      // Header
+      const headers = sectionRef.current.querySelectorAll('[data-gsap="header"]');
+      gsap.fromTo(
+        headers,
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 85%",
+            once: true,
+          },
+        }
+      );
+
+      // Cards
+      const cards = sectionRef.current.querySelectorAll('[data-gsap="card"]');
+      gsap.fromTo(
+        cards,
+        { y: 50, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          ease: "power3.out",
+          stagger: 0.12,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 75%",
+            once: true,
+          },
+        }
+      );
+    },
+    { scope: sectionRef }
+  );
 
   return (
     <>
@@ -177,6 +227,7 @@ export default function TestimonialsSection() {
       />
 
       <section
+        ref={sectionRef}
         className="relative w-full overflow-hidden py-16 sm:py-24 px-4 sm:px-8"
         style={{ background: "#FAFAF8" }}
       >
@@ -185,6 +236,7 @@ export default function TestimonialsSection() {
           {/* Header */}
           <div className="flex flex-col items-center text-center gap-4 max-w-xl">
             <span
+              data-gsap="header"
               className="text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded-full"
               style={{
                 fontFamily: "'Nunito', sans-serif",
@@ -192,17 +244,20 @@ export default function TestimonialsSection() {
                 background: "#FFF4EF",
                 border: "1px solid #FFD5C2",
                 letterSpacing: "2.5px",
+                opacity: 0,
               }}
             >
               Student Reviews
             </span>
 
             <h2
+              data-gsap="header"
               className="font-black leading-tight"
               style={{
                 fontFamily: "'Nunito', sans-serif",
                 fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
                 color: "#1B2A4A",
+                opacity: 0,
               }}
             >
               What Our{" "}

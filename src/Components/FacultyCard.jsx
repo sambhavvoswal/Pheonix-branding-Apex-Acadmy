@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { HiAcademicCap } from "react-icons/hi";
 import { MdVerified } from "react-icons/md";
 import { FaChalkboardTeacher } from "react-icons/fa";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const facultyData = [
     {
@@ -49,13 +54,14 @@ function FacultyCard({ faculty, index }) {
     <div
     onMouseEnter={() => setHovered(true)}
     onMouseLeave={() => setHovered(false)}
+    data-gsap="card"
     className="relative flex flex-col items-center rounded-2xl overflow-hidden transition-all duration-500 cursor-default group"
     style={{
         background: hovered ? faculty.accent : "#fff",
         border: `1.5px solid ${hovered ? faculty.accent : faculty.border}`,
         boxShadow: hovered ? `0 24px 48px ${faculty.accent}35` : "0 2px 16px rgba(0,0,0,0.06)",
         transform: hovered ? "translateY(-8px)" : "translateY(0)",
-        transitionDelay: `${index * 0.05}s`,
+        opacity: 0,
         }}
     >
       {/* Top color band */}
@@ -164,6 +170,51 @@ function FacultyCard({ faculty, index }) {
 }
 
 export default function FacultySection() {
+  const sectionRef = useRef(null);
+
+  useGSAP(
+    () => {
+      // Header
+      const headers = sectionRef.current.querySelectorAll('[data-gsap="header"]');
+      gsap.fromTo(
+        headers,
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 85%",
+            once: true,
+          },
+        }
+      );
+
+      // Cards
+      const cards = sectionRef.current.querySelectorAll('[data-gsap="card"]');
+      gsap.fromTo(
+        cards,
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.15,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 75%",
+            once: true,
+          },
+        }
+      );
+    },
+    { scope: sectionRef }
+  );
+
   return (
     <>
       <link
@@ -172,6 +223,7 @@ export default function FacultySection() {
       />
 
       <section
+        ref={sectionRef}
         className="relative w-full overflow-hidden py-20 sm:py-28 px-4 sm:px-8"
         style={{ background: "#FAFAF8" }}
       >
@@ -191,6 +243,7 @@ export default function FacultySection() {
           {/* ── Header ── */}
           <div className="flex flex-col items-center text-center gap-4 max-w-xl">
             <span
+              data-gsap="header"
               className="text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded-full"
               style={{
                 fontFamily: "'Nunito', sans-serif",
@@ -198,17 +251,20 @@ export default function FacultySection() {
                 background: "#FFF4EF",
                 border: "1px solid #FFD5C2",
                 letterSpacing: "2.5px",
+                opacity: 0,
               }}
             >
               Meet The Mentors
             </span>
 
             <h2
+              data-gsap="header"
               className="font-black leading-tight"
               style={{
                 fontFamily: "'Nunito', sans-serif",
                 fontSize: "clamp(1.8rem, 4.5vw, 3rem)",
                 color: "#1B2A4A",
+                opacity: 0,
               }}
             >
               Learn From{" "}
@@ -216,10 +272,12 @@ export default function FacultySection() {
             </h2>
 
             <p
+              data-gsap="header"
               className="text-base sm:text-lg leading-relaxed"
               style={{
                 fontFamily: "'Nunito', sans-serif",
                 color: "#6B7280",
+                opacity: 0,
               }}
             >
               Our faculty brings decades of teaching experience and a track record
