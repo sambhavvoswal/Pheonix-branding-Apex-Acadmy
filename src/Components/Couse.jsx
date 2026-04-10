@@ -64,12 +64,21 @@ const courseData = [
 
 const Couse = () => {
 return (
-    <div className='h-screen w-full max-w-7xl mx-auto px-4 py-16 flex gap-8 flex-wrap justify-center'>
-        {courseData.map((course) => (
-            <CourseCard key={course.id} course={course} />
-        ))}
+    <>
 
+    <div className='w-full h-auto flex justify-center mt-10'>
+        <div className='inline-flex rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.35em] text-orange-600 mb-6'>
+            Courses
+        </div>
     </div>
+
+    <div className='w-full max-w-7xl mx-auto px-4 py-20 flex gap-8 flex-wrap justify-center'>
+            {courseData.map((course) => (
+                <CourseCard key={course.id} course={course} />
+            ))}
+
+        </div>
+        </>
     )
 }
 

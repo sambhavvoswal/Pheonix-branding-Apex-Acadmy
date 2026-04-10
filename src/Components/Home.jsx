@@ -2,6 +2,7 @@ import React from 'react'
 import Hero from './Hero'
 import Achievement from './Achievement'
 import Couse from './Couse'
+import DemoClassesSection from './DemoClassesSection'
 
 const Home = () => {
   return (
@@ -9,6 +10,7 @@ const Home = () => {
         <Hero />
         <Achievement />
         <Couse />
+        <DemoClassesSection />
     </div>
   )
 }

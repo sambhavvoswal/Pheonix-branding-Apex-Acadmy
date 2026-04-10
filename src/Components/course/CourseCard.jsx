@@ -17,7 +17,7 @@ export default function CourseCard({ course }) {
       }}
     >
       {/* ── Image thumbnail ── */}
-      <div className="relative w-full aspect-[4/3] overflow-hidden">
+      <div className="relative w-full aspect-4/3 overflow-hidden">
         {/* macOS-style dots */}
         <div className="absolute top-3 left-3 z-10 flex gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-red-500 opacity-80" />
@@ -46,7 +46,7 @@ export default function CourseCard({ course }) {
 
         {/* Gradient overlay on image */}
         <div
-          className={`absolute inset-0 bg-gradient-to-t ${course.gradient} opacity-60
+          className={`absolute inset-0 bg-linear-to-t ${course.gradient} opacity-60
                       group-hover:opacity-40 transition-opacity duration-500`}
         />
 
