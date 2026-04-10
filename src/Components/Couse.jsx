@@ -1,0 +1,76 @@
+import React from 'react'
+import jeeImg   from "../assets/courses/jeeImg.png";
+import neetImg  from "../assets/courses/neetImg.png";
+import upscImg  from "../assets/courses/upscImg.png";
+import foundImg from "../assets/courses/foundImg.png";
+import CourseCard from './course/CourseCard';
+
+
+const courseData = [
+    {
+        id: 1,
+        category: "Engineering",
+        tag: "JEE",
+        title: "JEE Main & Advanced",
+        image: jeeImg,
+        accent: "#FF6B35",
+        gradient: "from-[#0d1b3e] to-[#1a3a6b]",
+        tagBg: "bg-orange-500/20 text-orange-400 border-orange-500/30",
+        topics: ["JEE Main & Advanced Prep", "2-Year Classroom Program", "Crash Course"],
+        badge: "Most Popular",
+        badgeColor: "bg-orange-500",
+    },
+    {
+        id: 2,
+        category: "Medical",
+        tag: "NEET",
+        title: "NEET UG Preparation",
+        image: neetImg,
+        accent: "#10B981",
+        gradient: "from-[#0d2e1f] to-[#0f4a32]",
+        tagBg: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+        topics: ["NEET UG Preparation", "Foundation Course", "Test Series"],
+        badge: null,
+        badgeColor: "",
+    },
+    {
+        id: 3,
+        category: "Civil Services",
+        tag: "UPSC",
+        title: "UPSC CS Foundation",
+        image: upscImg,
+        accent: "#6366F1",
+        gradient: "from-[#0f0d2e] to-[#1a1760]",
+        tagBg: "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
+        topics: ["GS Foundation", "Prelims + Mains", "Interview Guidance"],
+        badge: "New Batch",
+        badgeColor: "bg-indigo-500",
+    },
+    {
+        id: 4,
+        category: "School",
+        tag: "Class 8–10",
+        title: "Foundation Program",
+        image: foundImg,
+        accent: "#F59E0B",
+        gradient: "from-[#2e1d05] to-[#4a3010]",
+        tagBg: "bg-amber-500/20 text-amber-400 border-amber-500/30",
+        topics: ["Olympiad Preparation", "NTSE", "Concept Building"],
+        badge: null,
+        badgeColor: "",
+    },
+];
+
+
+const Couse = () => {
+return (
+    <div className='h-screen w-full max-w-7xl mx-auto px-4 py-16 flex gap-8 flex-wrap justify-center'>
+        {courseData.map((course) => (
+            <CourseCard key={course.id} course={course} />
+        ))}
+
+    </div>
+    )
+}
+
+export default Couse

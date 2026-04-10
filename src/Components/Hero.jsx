@@ -1,10 +1,10 @@
 import React from 'react'
-import HeroBG from './HeroBG'
+import HeroBG from './hero/HeroBG'
 import jee from '../assets/jee.png'
 import neet from '../assets/neet.png'
 import upsc from '../assets/upsc.png'
 import general from '../assets/general.png'
-import FloatingLogos from './FloatingLogos'
+import FloatingLogos from './hero/FloatingLogos'
 import { FaArrowRight } from "react-icons/fa";
 const Hero = () => {
 return (

@@ -1,10 +1,10 @@
 import { useState } from "react";
-import img1 from "../assets/HeroBG/img1.png";
-import img2 from "../assets/HeroBG/img2.png";
-import img3 from "../assets/HeroBG/img3.png";
-import img4 from "../assets/HeroBG/img4.png";
-import img5 from "../assets/HeroBG/img5.png";
-import img6 from "../assets/HeroBG/img6.png";
+import img1 from "../../assets/HeroBG/img1.png";
+import img2 from "../../assets/HeroBG/img2.png";
+import img3 from "../../assets/HeroBG/img3.png";
+import img4 from "../../assets/HeroBG/img4.png";
+import img5 from "../../assets/HeroBG/img5.png";
+import img6 from "../../assets/HeroBG/img6.png";
 
 
 const images = [img1, img2, img3, img4, img5, img6];
